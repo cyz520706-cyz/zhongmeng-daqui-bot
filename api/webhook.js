@@ -1,4 +1,6 @@
-module.exports = (req, res) => {
+module.exports = function handler(req, res) {
+    console.log('Webhook 函数被调用:', req.method, req.url);
+    
     // 设置响应头
     res.setHeader('Content-Type', 'application/json');
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -7,63 +9,57 @@ module.exports = (req, res) => {
     
     // 处理预检请求
     if (req.method === 'OPTIONS') {
-        return res.status(200).end();
+        return res.status(200).json({ message: 'OK' });
     }
     
-    console.log(`[${new Date().toISOString()}] ${req.method} 请求`);
-    
-    // 处理 GET 请求
+    // GET 请求 - 健康检查
     if (req.method === 'GET') {
         return res.status(200).json({
-            ok: true,
-            message: '✅ Webhook API 运行正常',
+            success: true,
+            message: 'Webhook API 运行正常',
             timestamp: new Date().toISOString(),
-            version: '1.0.0',
-            usage: '用于接收 Telegram 机器人消息'
+            status: 'online'
         });
     }
     
-    // 处理 POST 请求
+    // POST 请求 - 处理数据
     if (req.method === 'POST') {
         let body = '';
         
-        // 异步读取请求体
-        req.on('data', chunk => {
-            body += chunk.toString();
+        // 读取请求体
+        req.on('data', function(chunk) {
+            body += chunk;
         });
         
-        req.on('end', () => {
+        req.on('end', function() {
             try {
-                const data = body ? JSON.parse(body) : {};
-                
+                const data = JSON.parse(body || '{}');
                 console.log('收到 POST 数据:', JSON.stringify(data));
                 
                 // 检查是否为 Telegram 更新
                 if (data.update_id) {
-                    console.log(`处理 Telegram 更新 #${data.update_id}`);
+                    console.log('处理 Telegram 更新 #' + data.update_id);
                     
-                    const response = {
+                    // 返回成功响应
+                    return res.status(200).json({
                         ok: true,
                         update_id: data.update_id,
                         processed: true,
                         timestamp: new Date().toISOString()
-                    };
-                    
-                    res.status(200).json(response);
+                    });
                 } else {
-                    res.status(200).json({
+                    // 普通 POST 请求
+                    return res.status(200).json({
                         ok: true,
                         received: data,
                         timestamp: new Date().toISOString()
                     });
                 }
-                
             } catch (error) {
-                console.error('解析 JSON 错误:', error);
-                res.status(400).json({
+                console.error('解析 JSON 错误:', error.message);
+                return res.status(400).json({
                     ok: false,
-                    error: '无效的 JSON',
-                    message: error.message
+                    error: 'Invalid JSON: ' + error.message
                 });
             }
         });
@@ -72,9 +68,9 @@ module.exports = (req, res) => {
     }
     
     // 其他方法
-    res.status(405).json({
+    return res.status(405).json({
         ok: false,
-        error: '方法不允许',
+        error: 'Method not allowed',
         allowed: ['GET', 'POST', 'OPTIONS']
     });
 };
