@@ -1,0 +1,11 @@
+{
+  "name": "zhongmeng-daqui-bot",
+  "version": "1.0.0",
+  "description": "中蒙代购机器人",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": "18.x"
+  }
+}
