@@ -1,13 +1,14 @@
-export default function handler(req, res) {
+module.exports = function handler(req, res) {
+    console.log('测试端点被调用');
+    
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    
     res.status(200).json({
-        ok: true,
-        message: '✅ 测试端点工作正常',
-        time: new Date().toLocaleString('zh-CN'),
+        success: true,
+        message: '测试端点正常工作',
+        timestamp: new Date().toISOString(),
         url: req.url,
-        method: req.method,
-        env: {
-            node_version: process.version,
-            platform: process.platform
-        }
+        method: req.method
     });
-}
+};
