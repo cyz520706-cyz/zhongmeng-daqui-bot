@@ -1,304 +1,301 @@
-```html
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🤖 中蒙代购机器人</title>
+    <title>🤖 中蒙代购机器人 - 简易管理</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #333;
+            padding: 20px;
+            color: white;
         }
-        
         .container {
-            background: white;
-            padding: 40px;
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
             border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+        .header {
             text-align: center;
-            max-width: 600px;
-            width: 90%;
+            margin-bottom: 40px;
         }
-        
-        .logo {
-            font-size: 4rem;
-            margin-bottom: 20px;
-        }
-        
         h1 {
             font-size: 2.5em;
             margin-bottom: 10px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
         }
-        
-        .subtitle {
-            color: #666;
-            margin-bottom: 30px;
-            font-size: 1.1em;
-        }
-        
-        .status {
+        .status-badge {
             background: #48bb78;
             color: white;
-            padding: 15px 30px;
-            border-radius: 50px;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-top: 10px;
             display: inline-block;
-            margin: 20px 0;
-            font-weight: bold;
         }
-        
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin: 30px 0;
-            text-align: left;
+        .section {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
         }
-        
-        .feature {
-            padding: 20px;
-            background: #f8f9fa;
-            border-radius: 10px;
-            border-left: 4px solid #667eea;
+        .section h3 {
+            margin-bottom: 15px;
+            color: #ffc107;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-        
-        .feature h3 {
-            color: #667eea;
-            margin-bottom: 10px;
-        }
-        
         .btn {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: #4CAF50;
             color: white;
-            padding: 15px 30px;
+            padding: 12px 24px;
             border: none;
             border-radius: 50px;
-            font-size: 16px;
-            cursor: pointer;
-            margin: 10px;
             text-decoration: none;
-            display: inline-block;
-            transition: transform 0.3s;
-        }
-        
-        .btn:hover {
-            transform: translateY(-2px);
-        }
-        
-        .links {
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
-        }
-        
-        .links a {
-            color: #667eea;
-            text-decoration: none;
-            margin: 0 10px;
-        }
-        
-        .demo-btn {
-            background: #ff6b6b;
-            color: white;
-            padding: 12px 25px;
-            border: none;
-            border-radius: 25px;
-            font-size: 14px;
-            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
             margin: 5px;
         }
-        
-        .demo-section {
-            background: #f1f3f4;
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        .btn-primary { background: #667eea; }
+        .btn-danger { background: #f56565; }
+        .btn-success { background: #48bb78; }
+        .logs-box {
+            background: #1a1a1a;
+            color: #0f0;
             padding: 20px;
             border-radius: 10px;
-            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 15px;
         }
-        
-        .demo-section h3 {
+        .log-line {
+            margin-bottom: 10px;
+            padding: 8px;
+            border-left: 3px solid;
+        }
+        .info { border-color: #4299e1; }
+        .success { border-color: #48bb78; }
+        .warning { border-color: #ed8936; }
+        .error { border-color: #f56565; }
+        .form-group {
             margin-bottom: 15px;
-            color: #333;
         }
-        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
         @media (max-width: 768px) {
-            .container {
-                margin: 20px;
-                padding: 30px 20px;
-            }
-            
-            h1 {
-                font-size: 2em;
-            }
-            
-            .features {
-                grid-template-columns: 1fr;
-            }
+            .container { padding: 20px; }
+            h1 { font-size: 1.8em; }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="logo">🤖</div>
-        <h1>中蒙代购机器人</h1>
-        <p class="subtitle">专业跨境代购服务管理系统</p>
-        
-        <div class="status">🟢 在线运行中</div>
-        
-        <div class="features">
-            <div class="feature">
-                <h3>📦 订单管理</h3>
-                <p>完整的订单流程管理，从下单到完成</p>
+        <div class="header">
+            <h1><span>🤖</span> 中蒙代购机器人管理系统</h1>
+            <div class="status-badge">🟢 系统在线</div>
+        </div>
+
+        <div class="section">
+            <h3>📊 数据概览</h3>
+            <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 20px;">
+                <div>
+                    <div style="font-size: 2em; font-weight: bold;">0</div>
+                    <div>总订单</div>
+                </div>
+                <div>
+                    <div style="font-size: 2em; font-weight: bold;">0</div>
+                    <div>客户数</div>
+                </div>
+                <div>
+                    <div style="font-size: 2em; font-weight: bold;">¥0</div>
+                    <div>总收入</div>
+                </div>
+                <div>
+                    <div style="font-size: 2em; font-weight: bold;">0</div>
+                    <div>今日消息</div>
+                </div>
             </div>
-            <div class="feature">
-                <h3>👥 客户管理</h3>
-                <p>客户信息管理，VIP等级系统</p>
+            <button class="btn" onclick="refreshData()">🔄 刷新数据</button>
+        </div>
+
+        <div class="section">
+            <h3>📝 日志查看</h3>
+            <div class="logs-box" id="logs">
+                [2024-02-06 10:30:00] 系统启动成功
+                [2024-02-06 10:31:00] Webhook 运行正常
+                [2024-02-06 10:32:00] 等待用户连接...
             </div>
-            <div class="feature">
-                <h3>📊 数据统计</h3>
-                <p>实时数据看板，业绩分析</p>
-            </div>
-            <div class="feature">
-                <h3>🔧 系统配置</h3>
-                <p>Bot配置，费用设置，自动回复</p>
+            <div style="margin-top: 15px;">
+                <button class="btn btn-success" onclick="addTestLog()">➕ 添加测试日志</button>
+                <button class="btn btn-danger" onclick="clearLogs()">🗑️ 清除日志</button>
             </div>
         </div>
-        
-        <div class="demo-section">
-            <h3>🎮 互动演示</h3>
-            <button class="demo-btn" onclick="showBotDemo()">🤖 Bot对话演示</button>
-            <button class="demo-btn" onclick="showOrderDemo()">📦 订单流程演示</button>
-            <button class="demo-btn" onclick="showStatsDemo()">📈 统计数据演示</button>
+
+        <div class="section">
+            <h3>⚙️ 设置配置</h3>
+            <div class="form-group">
+                <label>Bot Token:</label>
+                <input type="text" id="botToken" placeholder="输入 Telegram Bot Token">
+            </div>
+            <div class="form-group">
+                <label>Webhook URL:</label>
+                <input type="text" id="webhookUrl" readonly>
+            </div>
+            <div class="form-group">
+                <label>管理密码:</label>
+                <input type="password" id="adminPassword" placeholder="设置访问密码">
+            </div>
+            <button class="btn btn-primary" onclick="saveSettings()">💾 保存设置</button>
+            <button class="btn" onclick="setupWebhook()">🔗 设置 Webhook</button>
         </div>
-        
-        <div id="demo-content" style="display: none;">
-            <!-- 演示内容会在这里显示 -->
+
+        <div class="section">
+            <h3>🔗 常用链接</h3>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <a href="https://telegram.org" target="_blank" class="btn">📱 Telegram</a>
+                <a href="https://core.telegram.org/bots" target="_blank" class="btn">🤖 Bot API</a>
+                <a href="/webhook.php" target="_blank" class="btn">🌐 Webhook 测试</a>
+                <button class="btn btn-success" onclick="sendTestMessage()">💬 发送测试消息</button>
+            </div>
         </div>
-        
-        <div class="links">
-            <a href="#" onclick="showGitHubRepo()">📁 源码</a>
-            <a href="#" onclick="showDocumentation()">📚 文档</a>
-            <a href="#" onclick="showContact()">📞 联系我们</a>
-        </div>
-        
-        <p style="margin-top: 20px; color: #888; font-size: 14px;">
-            🇨🇳 Made with ❤️ in China | 🇲🇳 For Mongolia
-        </p>
     </div>
+
     <script>
-        function showBotDemo() {
-            const content = document.getElementById('demo-content');
-            content.innerHTML = `
-                <div style="background: white; padding: 20px; border-radius: 10px; text-align: left;">
-                    <h3>🤖 Bot对话演示</h3>
-                    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 10px 0;">
-                        <strong>用户：</strong> 我想买件羽绒服<br>
-                        <strong>Bot：</strong> 您好！欢迎光临中蒙代购～ 😊 请发送商品链接，我来帮您查询价格和代购费用。
-                    </div>
-                    <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; margin: 10px 0;">
-                        <strong>用户：</strong> https://mobile.yangkeduo.com/goods2.html?ps=7rnuKWRR4q<br>
-                        <strong>Bot：</strong> 收到链接！正在为您查询... ✅ 商品：优衣库羽绒服 💰 价格：¥599 📦 预计3-5天到达 确认要代购吗？
-                    </div>
-                    <div style="background: #fff3e0; padding: 15px; border-radius: 8px; margin: 10px 0;">
-                        <strong>Bot：</strong> 确认请回复"1"，了解更多回复"2"
-                    </div>
-                </div>
-            `;
-            content.style.display = 'block';
-        }
-        
-        function showOrderDemo() {
-            const content = document.getElementById('demo-content');
-            content.innerHTML = `
-                <div style="background: white; padding: 20px; border-radius: 10px;">
-                    <h3>📦 订单流程演示</h3>
-                    <div style="text-align: left; margin: 20px 0;">
-                        <div style="margin: 15px 0; padding: 10px; background: #e8f5e8; border-radius: 5px;">
-                            ✅ <strong>步骤1：</strong> 用户发送商品链接
-                        </div>
-                        <div style="margin: 15px 0; padding: 10px; background: #e3f2fd; border-radius: 5px;">
-                            📊 <strong>步骤2：</strong> 系统查询商品信息和价格
-                        </div>
-                        <div style="margin: 15px 0; padding: 10px; background: #fff3e0; border-radius: 5px;">
-                            💰 <strong>步骤3：</strong> 计算代购费用并报价
-                        </div>
-                        <div style="margin: 15px 0; padding: 10px; background: #f3e5f5; border-radius: 5px;">
-                            ✅ <strong>步骤4：</strong> 用户确认下单并付款
-                        </div>
-                        <div style="margin: 15px 0; padding: 10px; background: #e8f5e8; border-radius: 5px;">
-                            🚚 <strong>步骤5：</strong> 采购并发货
-                        </div>
-                    </div>
-                </div>
-            `;
-            content.style.display = 'block';
-        }
-        
-        function showStatsDemo() {
-            const content = document.getElementById('demo-content');
-            content.innerHTML = `
-                <div style="background: white; padding: 20px; border-radius: 10px;">
-                    <h3>📈 统计数据演示</h3>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin: 20px 0;">
-                        <div style="text-align: center; padding: 15px; background: #667eea; color: white; border-radius: 10px;">
-                            <div style="font-size: 24px; font-weight: bold;">156</div>
-                            <div>总订单</div>
-                        </div>
-                        <div style="text-align: center; padding: 15px; background: #48bb78; color: white; border-radius: 10px;">
-                            <div style="font-size: 24px; font-weight: bold;">89</div>
-                            <div>客户数</div>
-                        </div>
-                        <div style="text-align: center; padding: 15px; background: #ed8936; color: white; border-radius: 10px;">
-                            <div style="font-size: 24px; font-weight: bold;">¥23,567</div>
-                            <div>总收入</div>
-                        </div>
-                        <div style="text-align: center; padding: 15px; background: #4299e1; color: white; border-radius: 10px;">
-                            <div style="font-size: 24px; font-weight: bold;">12</div>
-                            <div>今日消息</div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            content.style.display = 'block';
-        }
-        
-        function showGitHubRepo() {
-            alert('📁 GitHub仓库：https://github.com/yourusername/zhongmeng-daqui-bot\n\n包含完整的源代码和部署说明');
-        }
-        
-        function showDocumentation() {
-            alert('📚 技术文档和部署指南请访问项目GitHub页面查看详细说明');
-        }
-        
-        function showContact() {
-            alert('📞 联系方式：\n\n📱 微信：371940541\n📧 邮箱：support@zhongmeng.mn\n💬 Telegram：@Chinashop888_bot');
-        }
-        
-        // 页面加载动画
-        window.addEventListener('load', function() {
-            document.querySelector('.container').style.opacity = '0';
-            document.querySelector('.container').style.transform = 'translateY(30px)';
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 显示当前的 Webhook URL
+            const webhookUrl = window.location.origin + '/webhook.php';
+            document.getElementById('webhookUrl').value = webhookUrl;
             
-            setTimeout(() => {
-                document.querySelector('.container').style.transition = 'all 0.6s ease';
-                document.querySelector('.container').style.opacity = '1';
-                document.querySelector('.container').style.transform = 'translateY(0)';
-            }, 100);
+            // 加载日志
+            loadLogs();
+            
+            // 每30秒自动刷新
+            setInterval(loadLogs, 30000);
         });
+
+        // 加载日志
+        async function loadLogs() {
+            try {
+                const response = await fetch('logs.txt');
+                const text = await response.text();
+                const logLines = text.split('\n').filter(line => line.trim());
+                
+                let html = '';
+                logLines.slice(-10).forEach(line => {
+                    let levelClass = 'info';
+                    if (line.includes('错误')) levelClass = 'error';
+                    if (line.includes('成功')) levelClass = 'success';
+                    if (line.includes('警告')) levelClass = 'warning';
+                    
+                    html += `<div class="log-line ${levelClass}">${line}</div>`;
+                });
+                
+                document.getElementById('logs').innerHTML = html || '暂无日志';
+            } catch (error) {
+                console.error('加载日志失败:', error);
+                document.getElementById('logs').innerHTML = '无法加载日志';
+            }
+        }
+
+        // 添加测试日志
+        async function addTestLog() {
+            try {
+                const response = await fetch('?action=addlog&msg=' + encodeURIComponent('测试日志 ' + new Date().toLocaleTimeString()));
+                loadLogs();
+                alert('已添加测试日志');
+            } catch (error) {
+                alert('添加失败: ' + error.message);
+            }
+        }
+
+        // 清除日志
+        function clearLogs() {
+            if (confirm('确定要清空所有日志吗？')) {
+                fetch('?action=clearlogs');
+                loadLogs();
+                alert('日志已清空');
+            }
+        }
+
+        // 刷新数据
+        function refreshData() {
+            alert('数据已刷新');
+            loadLogs();
+        }
+
+        // 保存设置
+        function saveSettings() {
+            const token = document.getElementById('botToken').value;
+            const password = document.getElementById('adminPassword').value;
+            
+            // 保存到 localStorage（实际项目应保存到服务器）
+            localStorage.setItem('botToken', token);
+            localStorage.setItem('adminPassword', password);
+            
+            alert('设置已保存到本地存储');
+        }
+
+        // 设置 Webhook
+        function setupWebhook() {
+            const token = document.getElementById('botToken').value;
+            if (!token) {
+                alert('请先输入 Bot Token');
+                return;
+            }
+            
+            const webhookUrl = document.getElementById('webhookUrl').value;
+            alert(`Webhook URL 已复制到剪贴板:\n${webhookUrl}\n\n请登录 Telegram Bot Father 设置此 URL`);
+            
+            // 复制到剪贴板
+            navigator.clipboard.writeText(webhookUrl);
+        }
+
+        // 发送测试消息
+        function sendTestMessage() {
+            const token = localStorage.getItem('botToken');
+            if (!token) {
+                alert('请先保存 Bot Token');
+                return;
+            }
+            
+            const testMessage = prompt('输入测试消息内容:', '这是一条测试消息');
+            if (testMessage) {
+                alert('测试消息已发送: ' + testMessage);
+                // 这里应该发送到 Telegram API
+            }
+        }
     </script>
 </body>
 </html>
