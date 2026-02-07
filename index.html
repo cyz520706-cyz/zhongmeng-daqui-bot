@@ -297,5 +297,47 @@
             }
         }
     </script>
+    // 在 index.html 的 script 标签中添加：
+
+// API 配置
+const API_BASE = '/api';
+
+// 发送测试消息
+async function sendTestMessage() {
+    const testMessage = prompt('输入测试消息:', '这是一条测试消息');
+    if (!testMessage) return;
+    
+    try {
+        const response = await fetch('/api/webhook', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                message: { text: testMessage },
+                test: true
+            })
+        });
+        
+        if (response.ok) {
+            alert('测试消息发送成功！');
+        } else {
+            alert('发送失败');
+        }
+    } catch (error) {
+        alert('网络错误: ' + error.message);
+    }
+}
+
+// 测试 Webhook
+function testWebhook() {
+    fetch('/api/webhook')
+        .then(response => response.text())
+        .then(html => {
+            const newWindow = window.open();
+            newWindow.document.write(html);
+        })
+        .catch(error => {
+            alert('Webhook 测试失败: ' + error.message);
+        });
+}
 </body>
 </html>
