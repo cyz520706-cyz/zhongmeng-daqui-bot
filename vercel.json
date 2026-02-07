@@ -1,41 +1,13 @@
 {
   "version": 2,
   "name": "zhongmeng-daqui-bot",
-  "public": true,
   "builds": [
-    {
-      "src": "index.html",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "webhook.php",
-      "use": "@vercel/php"
-    }
+    { "src": "index.html", "use": "@vercel/static" },
+    { "src": "api/**/*.js", "use": "@vercel/node" }
   ],
   "routes": [
-    {
-      "src": "/",
-      "dest": "/index.html"
-    },
-    {
-      "src": "/webhook.php",
-      "dest": "/webhook.php",
-      "methods": ["GET", "POST"]
-    },
-    {
-      "src": "/logs.txt",
-      "dest": "/logs.txt",
-      "methods": ["GET"]
-    }
-  ],
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        { "key": "Access-Control-Allow-Origin", "value": "*" },
-        { "key": "Access-Control-Allow-Methods", "value": "GET,POST,OPTIONS" },
-        { "key": "Access-Control-Allow-Headers", "value": "Content-Type" }
-      ]
-    }
+    { "src": "/", "dest": "/index.html" },
+    { "src": "/api/webhook", "dest": "/api/webhook.js" },
+    { "src": "/api/clear", "dest": "/api/clear.js" }
   ]
 }
