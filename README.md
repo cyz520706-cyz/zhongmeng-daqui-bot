@@ -11,7 +11,7 @@
 ## 快速开始
 
 ### 访问管理面板
-直接访问：https://你的用户名.github.io/zhongmeng-daqui-bot
+直接访问：https://cyz520706-cyz.github.io/zhongmeng-daqui-bot
 
 ### 本地运行
 ```bash
