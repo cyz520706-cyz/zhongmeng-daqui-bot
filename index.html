@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🤖 中蒙代购机器人 - 简易管理</title>
+    <title>🤖 中蒙代购机器人管理系统</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
@@ -16,328 +16,185 @@
         .container {
             max-width: 800px;
             margin: 0 auto;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255,255,255,0.1);
             backdrop-filter: blur(10px);
             border-radius: 20px;
             padding: 40px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
         }
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
+        .status { 
+            background: #48bb78; 
+            padding: 10px 20px; 
+            border-radius: 20px; 
+            display: inline-block; 
+            margin: 10px 0; 
         }
-        h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 20px;
+        .error { 
+            background: #f56565; 
+            padding: 10px 20px; 
+            border-radius: 20px; 
+            display: inline-block; 
+            margin: 10px 0; 
         }
-        .status-badge {
-            background: #48bb78;
-            color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.9em;
-            margin-top: 10px;
-            display: inline-block;
-        }
-        .section {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 25px;
-            border-radius: 15px;
-            margin-bottom: 25px;
-        }
-        .section h3 {
-            margin-bottom: 15px;
-            color: #ffc107;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            background: #4CAF50;
-            color: white;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: bold;
-            transition: 0.3s;
+        .btn { 
+            background: #4CAF50; 
+            color: white; 
+            padding: 12px 24px; 
+            border: none; 
+            border-radius: 50px; 
+            cursor: pointer; 
             margin: 5px;
+            font-size: 16px;
         }
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        .btn-debug {
+            background: #ed8936;
         }
-        .btn-primary { background: #667eea; }
-        .btn-danger { background: #f56565; }
-        .btn-success { background: #48bb78; }
-        .logs-box {
-            background: #1a1a1a;
-            color: #0f0;
-            padding: 20px;
-            border-radius: 10px;
-            font-family: 'Courier New', monospace;
-            max-height: 300px;
-            overflow-y: auto;
-            margin-top: 15px;
-        }
-        .log-line {
-            margin-bottom: 10px;
-            padding: 8px;
-            border-left: 3px solid;
-        }
-        .info { border-color: #4299e1; }
-        .success { border-color: #48bb78; }
-        .warning { border-color: #ed8936; }
-        .error { border-color: #f56565; }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.2);
-            background: rgba(255,255,255,0.1);
-            color: white;
-        }
-        @media (max-width: 768px) {
-            .container { padding: 20px; }
-            h1 { font-size: 1.8em; }
+        pre { 
+            background: rgba(0,0,0,0.3); 
+            color: #0f0; 
+            padding: 20px; 
+            border-radius: 10px; 
+            overflow-x: auto; 
+            margin: 20px 0;
+            font-family: monospace;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1><span>🤖</span> 中蒙代购机器人管理系统</h1>
-            <div class="status-badge">🟢 系统在线</div>
+        <div style="text-align: center; margin-bottom: 40px;">
+            <h1>🤖 中蒙代购机器人管理系统</h1>
+            <div id="status" class="status">🟢 系统在线</div>
+            <div id="error-info" class="error" style="display:none;"></div>
         </div>
-
-        <div class="section">
-            <h3>📊 数据概览</h3>
-            <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 20px;">
-                <div>
-                    <div style="font-size: 2em; font-weight: bold;">0</div>
-                    <div>总订单</div>
-                </div>
-                <div>
-                    <div style="font-size: 2em; font-weight: bold;">0</div>
-                    <div>客户数</div>
-                </div>
-                <div>
-                    <div style="font-size: 2em; font-weight: bold;">¥0</div>
-                    <div>总收入</div>
-                </div>
-                <div>
-                    <div style="font-size: 2em; font-weight: bold;">0</div>
-                    <div>今日消息</div>
-                </div>
-            </div>
-            <button class="btn" onclick="refreshData()">🔄 刷新数据</button>
+        
+        <div style="text-align: center; margin: 30px 0;">
+            <button class="btn" onclick="testBasic()">🔧 基本API测试</button>
+            <button class="btn" onclick="testWebhook()">📡 完整Webhook测试</button>
+            <button class="btn btn-debug" onclick="debug404()">🔍 调试404问题</button>
+            <button class="btn" onclick="checkTelegram()">🤖 检查Telegram状态</button>
+            <button class="btn" onclick="setWebhook()">🔄 设置Webhook</button>
         </div>
-
-        <div class="section">
-            <h3>📝 日志查看</h3>
-            <div class="logs-box" id="logs">
-                [2024-02-06 10:30:00] 系统启动成功
-                [2024-02-06 10:31:00] Webhook 运行正常
-                [2024-02-06 10:32:00] 等待用户连接...
-            </div>
-            <div style="margin-top: 15px;">
-                <button class="btn btn-success" onclick="addTestLog()">➕ 添加测试日志</button>
-                <button class="btn btn-danger" onclick="clearLogs()">🗑️ 清除日志</button>
-            </div>
-        </div>
-
-        <div class="section">
-            <h3>⚙️ 设置配置</h3>
-            <div class="form-group">
-                <label>Bot Token:</label>
-                <input type="text" id="botToken" placeholder="输入 Telegram Bot Token">
-            </div>
-            <div class="form-group">
-                <label>Webhook URL:</label>
-                <input type="text" id="webhookUrl" readonly>
-            </div>
-            <div class="form-group">
-                <label>管理密码:</label>
-                <input type="password" id="adminPassword" placeholder="设置访问密码">
-            </div>
-            <button class="btn btn-primary" onclick="saveSettings()">💾 保存设置</button>
-            <button class="btn" onclick="setupWebhook()">🔗 设置 Webhook</button>
-        </div>
-
-        <div class="section">
-            <h3>🔗 常用链接</h3>
-            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                <a href="https://telegram.org" target="_blank" class="btn">📱 Telegram</a>
-                <a href="https://core.telegram.org/bots" target="_blank" class="btn">🤖 Bot API</a>
-                <button class="btn" onclick="testWebhook()">🌐 Webhook 测试</button>
-                <button class="btn btn-success" onclick="sendTestMessage()">💬 发送测试消息</button>
-            </div>
-        </div>
+        
+        <h3>📊 API 状态</h3>
+        <div id="api-status" style="color: #ccc; margin: 10px 0;">等待测试...</div>
+        
+        <h3>📝 测试结果</h3>
+        <pre id="result">暂无结果</pre>
+        
+        <h3>📋 待办事项</h3>
+        <ol>
+            <li>✅ 确保有正确的文件结构</li>
+            <li>✅ 确保已推送代码到 GitHub</li>
+            <li>✅ 确保 Vercel 已自动部署</li>
+            <li>✅ 测试 API 端点是否可访问</li>
+            <li>✅ 设置 Telegram Webhook URL</li>
+        </ol>
     </div>
 
     <script>
-        // 初始化
-        document.addEventListener('DOMContentLoaded', function() {
-            // 显示当前的 Webhook URL
-            const webhookUrl = window.location.origin + '/webhook.php';
-            document.getElementById('webhookUrl').value = webhookUrl;
-            
-            // 加载日志
-            loadLogs();
-            
-            // 每30秒自动刷新
-            setInterval(loadLogs, 30000);
-        });
-
-        // 加载日志
-        async function loadLogs() {
-            try {
-                const response = await fetch('logs.txt');
-                const text = await response.text();
-                const logLines = text.split('\n').filter(line => line.trim());
-                
-                let html = '';
-                logLines.slice(-10).forEach(line => {
-                    let levelClass = 'info';
-                    if (line.includes('错误')) levelClass = 'error';
-                    if (line.includes('成功')) levelClass = 'success';
-                    if (line.includes('警告')) levelClass = 'warning';
-                    
-                    html += `<div class="log-line ${levelClass}">${line}</div>`;
-                });
-                
-                document.getElementById('logs').innerHTML = html || '暂无日志';
-            } catch (error) {
-                console.error('加载日志失败:', error);
-                document.getElementById('logs').innerHTML = '无法加载日志';
-            }
+        function showResult(message, type = 'success') {
+            const pre = document.getElementById('result');
+            pre.textContent = typeof message === 'string' ? message : JSON.stringify(message, null, 2);
         }
-
-        // 添加测试日志
-        async function addTestLog() {
-            try {
-                const response = await fetch('?action=addlog&msg=' + encodeURIComponent('测试日志 ' + new Date().toLocaleTimeString()));
-                loadLogs();
-                alert('已添加测试日志');
-            } catch (error) {
-                alert('添加失败: ' + error.message);
-            }
-        }
-
-        // 清除日志
-        function clearLogs() {
-            if (confirm('确定要清空所有日志吗？')) {
-                fetch('?action=clearlogs');
-                loadLogs();
-                alert('日志已清空');
-            }
-        }
-
-        // 刷新数据
-        function refreshData() {
-            alert('数据已刷新');
-            loadLogs();
-        }
-
-        // 保存设置
-        function saveSettings() {
-            const token = document.getElementById('botToken').value;
-            const password = document.getElementById('adminPassword').value;
-            
-            // 保存到 localStorage（实际项目应保存到服务器）
-            localStorage.setItem('botToken', token);
-            localStorage.setItem('adminPassword', password);
-            
-            alert('设置已保存到本地存储');
-        }
-
-        // 设置 Webhook
-        function setupWebhook() {
-            const token = document.getElementById('botToken').value;
-            if (!token) {
-                alert('请先输入 Bot Token');
-                return;
-            }
-            
-            const webhookUrl = document.getElementById('webhookUrl').value;
-            alert(`Webhook URL 已复制到剪贴板:\n${webhookUrl}\n\n请登录 Telegram Bot Father 设置此 URL`);
-            
-            // 复制到剪贴板
-            navigator.clipboard.writeText(webhookUrl);
-        }
-
-        // 发送测试消息
-        function sendTestMessage() {
-            const token = localStorage.getItem('botToken');
-            if (!token) {
-                alert('请先保存 Bot Token');
-                return;
-            }
-            
-            const testMessage = prompt('输入测试消息内容:', '这是一条测试消息');
-            if (testMessage) {
-                alert('测试消息已发送: ' + testMessage);
-                // 这里应该发送到 Telegram API
-            }
-        }
-    </script>
-    // 在 index.html 的 script 标签中添加：
-
-// API 配置
-const API_BASE = '/api';
-
-// 发送测试消息
-async function sendTestMessage() {
-    const testMessage = prompt('输入测试消息:', '这是一条测试消息');
-    if (!testMessage) return;
-    
-    try {
-        const response = await fetch('/api/webhook', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                message: { text: testMessage },
-                test: true
-            })
-        });
         
-        if (response.ok) {
-            alert('测试消息发送成功！');
-        } else {
-            alert('发送失败');
+        async function testBasic() {
+            try {
+                showResult('🔄 测试基础 API 连接...', 'info');
+                const response = await fetch('/api/webhook');
+                const text = await response.text();
+                showResult(`✅ API 响应:\n状态: ${response.status}\n内容: ${text}`);
+            } catch (error) {
+                showResult(`❌ API 连接失败: ${error.message}`);
+            }
         }
-    } catch (error) {
-        alert('网络错误: ' + error.message);
-    }
-}
-
-// 测试 Webhook
-function testWebhook() {
-    fetch('/api/webhook')
-        .then(response => response.text())
-        .then(html => {
-            const newWindow = window.open();
-            newWindow.document.write(html);
-        })
-        .catch(error => {
-            alert('Webhook 测试失败: ' + error.message);
+        
+        async function testWebhook() {
+            try {
+                showResult('🔄 发送测试 POST 请求...', 'info');
+                const response = await fetch('/api/webhook', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        test: true,
+                        message: '这是测试消息',
+                        timestamp: new Date().toISOString()
+                    })
+                });
+                const data = await response.json();
+                showResult(`✅ POST 测试成功:\n状态: ${response.status}\n响应:`, data);
+            } catch (error) {
+                showResult(`❌ POST 请求失败: ${error.message}`);
+            }
+        }
+        
+        async function debug404() {
+            try {
+                showResult('🔍 诊断404问题...', 'info');
+                
+                // 测试多个端点
+                const endpoints = [
+                    '/',
+                    '/api/webhook',
+                    '/api/test'
+                ];
+                
+                let results = [];
+                for (const endpoint of endpoints) {
+                    try {
+                        const response = await fetch(endpoint);
+                        results.push(`${endpoint}: ${response.status}`);
+                    } catch (error) {
+                        results.push(`${endpoint}: 错误 - ${error.message}`);
+                    }
+                }
+                
+                showResult(`🔍 诊断结果:\n${results.join('\n')}`);
+                
+            } catch (error) {
+                showResult(`❌ 诊断失败: ${error.message}`);
+            }
+        }
+        
+        async function checkTelegram() {
+            try {
+                showResult('🤖 检查 Telegram Webhook 状态...', 'info');
+                
+                const token = '8383460965:AAG2unA8htPymlkTGK1kXqRmS61S5vDM34A';
+                const response = await fetch(`https://api.telegram.org/bot${token}/getWebhookInfo`);
+                const data = await response.json();
+                
+                showResult('Telegram Webhook 状态:', data);
+            } catch (error) {
+                showResult(`❌ 检查失败: ${error.message}`);
+            }
+        }
+        
+        async function setWebhook() {
+            try {
+                showResult('🔄 设置 Telegram Webhook...', 'info');
+                
+                const token = '8383460965:AAG2unA8htPymlkTGK1kXqRmS61S5vDM34A';
+                const webhookUrl = 'https://zhongmeng-daqui-bot.vercel.app/api/webhook';
+                
+                // 先删除旧的
+                await fetch(`https://api.telegram.org/bot${token}/deleteWebhook`);
+                
+                // 设置新的
+                const response = await fetch(`https://api.telegram.org/bot${token}/setWebhook?url=${encodeURIComponent(webhookUrl)}`);
+                const data = await response.json();
+                
+                showResult('Webhook 设置结果:', data);
+            } catch (error) {
+                showResult(`❌ 设置失败: ${error.message}`);
+            }
+        }
+        
+        // 页面加载时自动测试
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                testBasic();
+            }, 1000);
         });
-}
+    </script>
 </body>
 </html>
