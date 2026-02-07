@@ -1,4 +1,13 @@
-module.exports = async (req, res) => {
-    res.setHeader('Content-Type', 'text/plain; charset=utf-8');
-    res.status(200).send('✅ API 测试端点正常工作！\n时间: ' + new Date().toLocaleString('zh-CN'));
-};
+export default function handler(req, res) {
+    res.status(200).json({
+        ok: true,
+        message: '✅ 测试端点工作正常',
+        time: new Date().toLocaleString('zh-CN'),
+        url: req.url,
+        method: req.method,
+        env: {
+            node_version: process.version,
+            platform: process.platform
+        }
+    });
+}
