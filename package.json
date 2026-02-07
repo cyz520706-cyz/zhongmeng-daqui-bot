@@ -1,0 +1,13 @@
+{
+  "name": "zhongmeng-daqui-bot",
+  "version": "1.0.0",
+  "description": "中蒙代购机器人管理系统",
+  "main": "src/server/server.js",
+  "scripts": {
+    "start": "node src/server/server.js",
+    "dev": "node --watch src/server/server.js"
+  },
+  "keywords": ["telegram", "bot", "mongolia", "proxy"],
+  "author": "Your Name",
+  "license": "MIT"
+}
