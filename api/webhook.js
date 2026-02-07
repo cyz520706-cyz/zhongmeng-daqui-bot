@@ -1,87 +1,80 @@
-// 最简单的版本，确保一定能工作
-export default async function handler(req, res) {
-    console.log(`[${new Date().toISOString()}] 收到请求: ${req.method} ${req.url}`);
-    
-    // 设置 CORS 头
+module.exports = (req, res) => {
+    // 设置响应头
+    res.setHeader('Content-Type', 'application/json');
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     
+    // 处理预检请求
     if (req.method === 'OPTIONS') {
         return res.status(200).end();
     }
+    
+    console.log(`[${new Date().toISOString()}] ${req.method} 请求`);
     
     // 处理 GET 请求
     if (req.method === 'GET') {
         return res.status(200).json({
             ok: true,
-            message: 'Webhook API 已启动',
+            message: '✅ Webhook API 运行正常',
             timestamp: new Date().toISOString(),
-            description: '中蒙代购机器人 Webhook 端点',
-            usage: {
-                POST: '接收 Telegram 机器人消息',
-                GET: '检查 API 状态'
-            }
+            version: '1.0.0',
+            usage: '用于接收 Telegram 机器人消息'
         });
     }
     
     // 处理 POST 请求
     if (req.method === 'POST') {
-        try {
-            // 获取请求体
-            const body = req.body || {};
-            
-            console.log('POST 数据:', JSON.stringify(body, null, 2));
-            
-            // 如果是测试请求
-            if (body.test === true) {
-                return res.status(200).json({
-                    ok: true,
-                    message: '测试请求成功',
-                    received: body,
-                    timestamp: new Date().toISOString()
-                });
-            }
-            
-            // 处理 Telegram 更新
-            if (body.update_id) {
-                console.log(`处理 Telegram 更新 #${body.update_id}`);
+        let body = '';
+        
+        // 异步读取请求体
+        req.on('data', chunk => {
+            body += chunk.toString();
+        });
+        
+        req.on('end', () => {
+            try {
+                const data = body ? JSON.parse(body) : {};
                 
-                const message = body.message || body.callback_query?.message || body.edited_message;
-                if (message) {
-                    console.log(`消息来自: ${message.from?.first_name} (${message.from?.id})`);
+                console.log('收到 POST 数据:', JSON.stringify(data));
+                
+                // 检查是否为 Telegram 更新
+                if (data.update_id) {
+                    console.log(`处理 Telegram 更新 #${data.update_id}`);
+                    
+                    const response = {
+                        ok: true,
+                        update_id: data.update_id,
+                        processed: true,
+                        timestamp: new Date().toISOString()
+                    };
+                    
+                    res.status(200).json(response);
+                } else {
+                    res.status(200).json({
+                        ok: true,
+                        received: data,
+                        timestamp: new Date().toISOString()
+                    });
                 }
                 
-                // 立即响应 200，表示接收成功
-                return res.status(200).json({ 
-                    ok: true,
-                    update_id: body.update_id,
-                    processed: true,
-                    timestamp: new Date().toISOString()
+            } catch (error) {
+                console.error('解析 JSON 错误:', error);
+                res.status(400).json({
+                    ok: false,
+                    error: '无效的 JSON',
+                    message: error.message
                 });
             }
-            
-            // 其他 POST 请求
-            return res.status(200).json({
-                ok: true,
-                received: body,
-                timestamp: new Date().toISOString()
-            });
-            
-        } catch (error) {
-            console.error('处理 POST 请求时出错:', error);
-            return res.status(500).json({ 
-                ok: false, 
-                error: error.message,
-                timestamp: new Date().toISOString()
-            });
-        }
+        });
+        
+        return;
     }
     
-    // 其他 HTTP 方法
-    return res.status(405).json({
+    // 其他方法
+    res.status(405).json({
         ok: false,
         error: '方法不允许',
         allowed: ['GET', 'POST', 'OPTIONS']
     });
-}
+};
